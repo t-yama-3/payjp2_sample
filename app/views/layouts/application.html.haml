@@ -1,0 +1,19 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %title Payjp2Sample
+    %script{src: :'https://js.pay.jp/v1/', type: :'text/javascript'}
+    = csrf_meta_tags
+    = csp_meta_tag
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+  %body
+    = link_to 'トップページ', root_path, class: :top_link
+    - if user_signed_in?
+      = link_to 'ログアウト', destroy_user_session_path, method: :delete, class: :devise_btn
+    - else
+      = link_to '新規登録', new_user_registration_path, class: :devise_btn
+      = link_to 'ログイン', new_user_session_path, class: :devise_btn
+    %div
+      = yield
