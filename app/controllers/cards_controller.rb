@@ -4,7 +4,7 @@ class CardsController < ApplicationController
   def index
     if user_signed_in? && current_user.cards.length > 0
       Payjp.api_key = ENV["PAYJP_PRIVATE_KEY"]  # PayjpオブジェクトにAPIキー（秘密鍵）を設定
-      customer = Payjp::Customer.retrieve(current_user.cards.first.customer_token)
+      customer = Payjp::Customer.retrieve(current_user.customer_token)
       @cards = customer.cards.all
       @default_card = customer.cards.retrieve(customer.default_card)
     end
@@ -40,11 +40,12 @@ class CardsController < ApplicationController
 
   def create
     Payjp.api_key = ENV["PAYJP_PRIVATE_KEY"]  # PayjpオブジェクトにAPIキー（秘密鍵）を設定
-    if User.find(current_user.id).cards.length == 0
+    if User.find(current_user.id).customer_token == nil
       customer = Payjp::Customer.create(card: params[:payjp_token], metadata: {card_id: ""}, description: 'payjp_test')
+      current_user.update(customer_token: customer.id)  # これのエラーハンドリングはどうするか（後日トランザクションでくくる）
       @new_card = customer.cards.retrieve(customer.default_card)
     else
-      customer = Payjp::Customer.retrieve(current_user.cards.first.customer_token)
+      customer = Payjp::Customer.retrieve(current_user.customer_token)
       @new_card = customer.cards.create(card: params[:payjp_token], metadata: {card_id: ""})
     end
     card = Card.new(user_id: current_user.id, card_token: @new_card.id, customer_token: customer.id)
@@ -59,7 +60,7 @@ class CardsController < ApplicationController
 
   def show
     Payjp.api_key = ENV["PAYJP_PRIVATE_KEY"]  # PayjpオブジェクトにAPIキー（秘密鍵）を設定
-    customer = Payjp::Customer.retrieve(current_user.cards.first.customer_token)
+    customer = Payjp::Customer.retrieve(current_user.customer_token)
     @cards = customer.cards.all
     @default_card = customer.cards.retrieve(customer.default_card)
     # binding.pry
