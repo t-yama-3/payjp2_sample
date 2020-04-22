@@ -14,8 +14,8 @@ ActiveRecord::Schema.define(version: 2020_04_19_121836) do
 
   create_table "cards", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id"
-    t.string "customer_id", null: false
-    t.string "card_id", null: false
+    t.string "customer_token", null: false
+    t.string "card_token", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_cards_on_user_id"

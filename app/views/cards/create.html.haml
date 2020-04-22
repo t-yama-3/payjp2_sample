@@ -1,1 +1,5 @@
-cards#create
+= @new_card.brand
+%br
+= '**** **** **** ' + @new_card.last4
+%br
+= @new_card.exp_month.to_s + '/' + @new_card.exp_year.to_s

@@ -1,31 +1,22 @@
--# cards#show
--#     {"id":"car_cca59fd505d7a80a6d6034f98915",
--#     "address_city":null,
--#     "address_line1":null,
--#     "address_line2":null,
--#     "address_state":null,
--#     "address_zip":null,
--#     "address_zip_check":"unchecked",
--#     "brand":"Visa",
--#     "country":null,
--#     "created":1587485415,
--#     "customer":"cus_a532fa3fe362a372cd091f42089a",
--#     "cvc_check":"passed",
--#     "exp_month":5,
--#     "exp_year":2020,
--#     "fingerprint":"505dd4bb0a30c11fce6647475b3f0afe",
--#     "last4":"1881",
--#     "livemode":false,
--#     "metadata":{},
--#     "name":null,
--#     "object":"card",
--#     "three_d_secure_status":null},
-- @cards.each do |card|
-  = card.id
+%div= "------ デフォルトカード ------"
+= @default_card.brand
+%br
+= "**** **** **** #{@default_card.last4}"
+%br
+= "#{@default_card.exp_month.to_s}/#{@default_card.exp_year.to_s}"
+%br
+%br
+
+= "登録カード数：#{@cards.count}枚"
+- @cards.each_with_index do |card, i|
+  %div= "------ 登録カード#{i + 1} ------"
   = card.brand
-  = card.exp_month
-  = card.exp_year
-  = card.last4
   %br
-
-
+  = "**** **** **** #{card.last4}"
+  %br
+  = "#{card.exp_month.to_s}/#{card.exp_year.to_s}"
+  %br
+  = "metadata: #{card.metadata}"
+  = form_with url: card_delete_cards_path, rocal: true do
+    = hidden_field_tag :card_id, card.metadata.card_id
+    = submit_tag '削除'

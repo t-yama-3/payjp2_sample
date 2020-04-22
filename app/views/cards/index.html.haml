@@ -2,5 +2,23 @@
   = link_to 'クレジットカード作成', new_card_path
   %br
   - if current_user.cards.length > 0
-    = link_to 'クレジットカード確認', card_path(current_user.cards.first)
-  %br
+    %div= "------ デフォルトカード ------"
+    = @default_card.brand
+    %br
+    = "**** **** **** #{@default_card.last4}"
+    %br
+    = "#{@default_card.exp_month.to_s}/#{@default_card.exp_year.to_s}"
+    %br
+    %br
+    = "登録カード数：#{@cards.count}枚"
+    - @cards.each_with_index do |card, i|
+      %div= "------ 登録カード#{i + 1} ------"
+      = card.brand
+      %br
+      = "**** **** **** #{card.last4}"
+      %br
+      = "#{card.exp_month.to_s}/#{card.exp_year.to_s}"
+      %br
+      = form_with url: card_delete_cards_path, rocal: true do
+        = hidden_field_tag :card_id, card.metadata.card_id
+        = submit_tag '削除'
