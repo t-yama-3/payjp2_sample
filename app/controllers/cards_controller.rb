@@ -2,8 +2,8 @@ class CardsController < ApplicationController
   require 'payjp'
 
   def index
+    Payjp.api_key = ENV["PAYJP_PRIVATE_KEY"]  # PayjpオブジェクトにAPIキー（秘密鍵）を設定
     if user_signed_in? && current_user.cards.length > 0
-      Payjp.api_key = ENV["PAYJP_PRIVATE_KEY"]  # PayjpオブジェクトにAPIキー（秘密鍵）を設定
       customer = Payjp::Customer.retrieve(current_user.customer_token)
       @cards = customer.cards.all
       @default_card = customer.cards.retrieve(customer.default_card)
@@ -11,7 +11,6 @@ class CardsController < ApplicationController
   end
 
   def new
-    # card = Card.where(user_id: current_user.id)
   end
 
   def create_test  # テストアカウントのみ使用可能
@@ -27,15 +26,9 @@ class CardsController < ApplicationController
         'X-Payjp-Direct-Token-Generate': 'true'  # (テスト目的のトークン作成)HTTPヘッダーに X-Payjp-Direct-Token-Generate: true を指定
       }
     )
-    customer = Payjp::Customer.create(
-      card: token.id,
-      description: 'payjp_test'
-    )
-    Card.create(
-      user_id: current_user.id,
-      card_token: customer.default_card,
-      customer_token: customer.id
-    )
+    customer = Payjp::Customer.create(card: token.id, description: 'payjp_test')
+    current_user.update(customer_token: customer.id)
+    Card.create(user_id: current_user.id, card_token: customer.default_card)
   end
 
   def create
@@ -48,25 +41,39 @@ class CardsController < ApplicationController
       customer = Payjp::Customer.retrieve(current_user.customer_token)
       @new_card = customer.cards.create(card: params[:payjp_token], metadata: {card_id: ""})
     end
-    card = Card.new(user_id: current_user.id, card_token: @new_card.id, customer_token: customer.id)
+    card = Card.new(user_id: current_user.id, card_token: @new_card.id)
     if card.save
       @new_card.metadata[:card_id] = card.id
       @new_card.save
     else
       render :new
     end
-    # binding.pry
   end
 
-  def show
+  def card_show
     Payjp.api_key = ENV["PAYJP_PRIVATE_KEY"]  # PayjpオブジェクトにAPIキー（秘密鍵）を設定
     customer = Payjp::Customer.retrieve(current_user.customer_token)
-    @cards = customer.cards.all
-    @default_card = customer.cards.retrieve(customer.default_card)
-    # binding.pry
+    @show_card = customer.cards.retrieve(current_user.cards.find(params[:id]).card_token)
+  end
+
+  def card_default
+    Payjp.api_key = ENV["PAYJP_PRIVATE_KEY"]
+    customer = Payjp::Customer.retrieve(current_user.customer_token)
+    customer.default_card = Card.find(params[:id]).card_token
+    customer.save
+    redirect_to root_path
   end
 
   def card_delete
+    Payjp.api_key = ENV["PAYJP_PRIVATE_KEY"]
+    customer = Payjp::Customer.retrieve(current_user.customer_token)
+    card = Card.find(params[:id])
+    delete_card = customer.cards.retrieve(card.card_token)
+    if card.destroy
+      delete_card.delete
+    else
+      flash.now[:alert] = "カードを削除できませんでした。"
+    end
     redirect_to root_path
   end
 end

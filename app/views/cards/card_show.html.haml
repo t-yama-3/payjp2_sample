@@ -1,0 +1,6 @@
+%div= "------ カード詳細 ------"
+%div= "カード種別：#{@show_card.brand}"
+%div= "カード番号：**** **** **** #{@show_card.last4}"
+%div= "有効期限：#{@show_card.exp_month.to_s}月/#{@show_card.exp_year.to_s}年"
+%div= button_to 'デフォルトカードに設定', card_default_cards_path, params: {id: @show_card.metadata.card_id}
+%div= button_to '削除', card_delete_cards_path, params: {id: @show_card.metadata.card_id}, data: {confirm: "削除しますか？"}
