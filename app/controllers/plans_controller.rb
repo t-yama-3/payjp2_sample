@@ -7,12 +7,12 @@ class PlansController < ApplicationController
     customer_token = current_user.customer_token
     customer = Payjp::Customer.retrieve(customer_token)
     @new_plan = Payjp::Plan.create(
-      amount: 1000,
+      amount: params[:amount],
       currency: 'jpy',
-      interval: 'month',
-      name: 'test_plan',
-      trial_days: 30,
-      billing_day: 25,
+      interval: params[:interval],
+      name: params[:name],
+      trial_days: params[:trial_days],
+      billing_day: params[:billing_day],
       metadata: {plan_id: ""}
     )
     plan = Plan.new(plan_token: @new_plan.id)

@@ -1,28 +1,17 @@
-      amount: 1000,
-      currency: 'jpy',
-      interval: 'month',
-      name: 'test_plan',
-      trial_days: 30,
-      billing_day: 25,
-      metadata: {plan_id: ""}
-
 = form_with url: plans_path, local: true do |f|
-  = f.number_field :amount
-  -# = f.select :interval
--# %div
--#   カード番号
--#   = text_field_tag :number, ''
--# %div
--#   セキュリティコード
--#   = text_field_tag :cvc, ''
--# %div
--#   有効期限
--#   = select_tag :exp_month, options_for_select([['01', 1], ['02', 2], ['03', 3], ['04', 4], ['05', 5], ['06', 6], ['07', 7], ['08', 8], ['09', 9], ['10', 10], ['11', 11], ['12', 12]]), {prompt: '--'}
--#   = select_tag :exp_year, options_for_select([['20', 2020],['21', 2021], ['22', 2022], ['23', 2023], ['24', 2024], ['25', 2025], ['26', 2026], ['27', 2027], ['28', 2028], ['29', 2029]]), {prompt: '--'}
--# = button_tag '作成する', type: :button, id: :create_btn
--# = form_with url: cards_path, rocal: true, id: 'send_token' do
--#   = hidden_field_tag :payjp_token
-
-
-= button_to 'プランの作成', plans_path, params: {id: 1}
-
+  %div
+    定期過金額
+    = f.number_field :amount
+  %div
+    課金期間
+    = f.select :interval, options_for_select([['毎月', 'month'], ['毎年', 'year']], {selected: 'month'}), {prompt: '--'}
+  %div
+    プラン名
+    = f.text_field :name
+  %div
+    トライアル日数
+    = f.number_field :trial_days
+  %div
+    課金日
+    = f.number_field :billing_day
+  = f.submit 'プランの作成'

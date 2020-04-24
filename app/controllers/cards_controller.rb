@@ -11,6 +11,8 @@ class CardsController < ApplicationController
   end
 
   def new
+    @month_arr = [{name: '01', id: 1}, {name: '02', id: 2}, {name: '03', id: 3}, {name: '04', id: 4}, {name: '05', id: 5}, {name: '06', id: 6}, {name: '07', id: 7}, {name: '08', id: 8}, {name: '09', id: 9}, {name: '10', id: 10}, {name: '11', id: 11}, {name: '12', id: 12}]
+    @year_arr = [{name: '20', id: 2020},{name: '21', id: 2021}, {name: '22', id: 2022}, {name: '23', id: 2023}, {name: '24', id: 2024}, {name: '25', id: 2025}, {name: '26', id: 2026}, {name: '27', id: 2027}, {name: '28', id: 2028}, {name: '29', id: 2029}, {name: '30', id: 2030}]
   end
 
   def create_test  # テストアカウントのみ使用可能

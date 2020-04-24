@@ -1,13 +1,15 @@
 %div
   カード番号
-  = text_field_tag :number, ''
+  = text_field_tag :number
 %div
   セキュリティコード
-  = text_field_tag :cvc, ''
+  = text_field_tag :cvc
 %div
   有効期限
-  = select_tag :exp_month, options_for_select([['01', 1], ['02', 2], ['03', 3], ['04', 4], ['05', 5], ['06', 6], ['07', 7], ['08', 8], ['09', 9], ['10', 10], ['11', 11], ['12', 12]]), {prompt: '--'}
-  = select_tag :exp_year, options_for_select([['20', 2020],['21', 2021], ['22', 2022], ['23', 2023], ['24', 2024], ['25', 2025], ['26', 2026], ['27', 2027], ['28', 2028], ['29', 2029]]), {prompt: '--'}
+  -# = select_tag :exp_month, options_for_select([['01', 1], ['02', 2], ['03', 3], ['04', 4], ['05', 5], ['06', 6], ['07', 7], ['08', 8], ['09', 9], ['10', 10], ['11', 11], ['12', 12]]), {prompt: '--'}
+  -# = select_tag :exp_year, options_for_select([['20', 2020],['21', 2021], ['22', 2022], ['23', 2023], ['24', 2024], ['25', 2025], ['26', 2026], ['27', 2027], ['28', 2028], ['29', 2029]]), {prompt: '--'}
+  = select_tag :exp_month, options_for_select(@month_arr.map{|m|[m[:name], m[:id]]}), {prompt: '--'}
+  = select_tag :exp_year, options_for_select(@year_arr.map{|y|[y[:name], y[:id]]}), {prompt: '--'}
 = button_tag '作成する', type: :button, id: :create_btn
 = form_with url: cards_path, rocal: true, id: 'send_token' do
   = hidden_field_tag :payjp_token
