@@ -10,11 +10,10 @@ class ChargesController < ApplicationController
   end
 
   def create
-    binding.pry
     Payjp.api_key = ENV["PAYJP_PRIVATE_KEY"]  # PayjpオブジェクトにAPIキー（秘密鍵）を設定
     customer_token = current_user.customer_token
     customer = Payjp::Customer.retrieve(customer_token)
-    card_token = customer.default_card
+    card_token = customer.cards.retrieve(Card.find(params[:card_id]).card_token)
     charge = Payjp::Charge.create(
       amount: 1000,
       customer: customer_token,

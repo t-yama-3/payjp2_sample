@@ -1,11 +1,11 @@
-= form_with url: charges_path, local: true
-- @cards.each do |card|
-  - if card.metadata.card_id = @default_card.metadata.card_id
-    = radio_button_tag(:card_id, card.metadata.card_id, checked: true)
-  - else
-    = radio_button_tag(:card_id, card.metadata.card_id)
-  = label_tag(:"card_id_#{card.metadata.card_id}", "カード種別：#{card.brand}")
-  %div= "カード番号：**** **** **** #{card.last4}"
-  %div= "有効期限：#{card.exp_month.to_s}月/#{card.exp_year.to_s}年"
-  %div ------------------------------------------
-= submit_tag '購入する'
+= form_with url: charges_path, local: true do |f|
+  - @cards.each do |card|
+    - if card.metadata.card_id == @default_card.metadata.card_id
+      = f.radio_button(:card_id, card.metadata.card_id, checked: true)
+    - else
+      = f.radio_button(:card_id, card.metadata.card_id)
+    = f.label(:"card_id_#{card.metadata.card_id}", "カード種別：#{card.brand}")
+    %div= "カード番号：**** **** **** #{card.last4}"
+    %div= "有効期限：#{card.exp_month.to_s}月/#{card.exp_year.to_s}年"
+    %div ------------------------------------------
+  = f.submit '購入する'
