@@ -1,4 +1,9 @@
-= form_with url: plans_path, local: true do |f|
+- if @plan.errors.any?
+  .exhibition-message
+    .exhibition-message__title= "#{@plan.errors.full_messages.count}件のエラーが発生しました。"
+    - @plan.errors.full_messages.each do |message|
+      .exhibition-message__text= message
+= form_with model: @plan, local: true do |f|
   %div
     定期過金額
     = f.number_field :amount
@@ -10,7 +15,7 @@
     = f.text_field :name
   %div
     トライアル日数
-    = f.number_field :trial_days
+    = f.number_field :trial_days, value: 0
   %div
     課金日
     = f.number_field :billing_day

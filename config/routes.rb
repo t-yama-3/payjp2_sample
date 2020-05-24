@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   root to: 'cards#index'
   resources :cards, except: [:index, :show] do
     collection do
+      post 'card_test'  # テストカードのみ可能
       post 'card_show'
       post 'card_delete'
       post 'card_default'
