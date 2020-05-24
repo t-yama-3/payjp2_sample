@@ -21,6 +21,11 @@ ActiveRecord::Schema.define(version: 2020_04_24_035324) do
   end
 
   create_table "plans", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "amount", null: false
+    t.string "interval", null: false
+    t.string "name"
+    t.integer "trial_days"
+    t.integer "billing_day"
     t.string "plan_token", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

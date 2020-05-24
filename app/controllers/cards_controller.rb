@@ -15,24 +15,6 @@ class CardsController < ApplicationController
     @year_arr = [{name: '20', id: 2020},{name: '21', id: 2021}, {name: '22', id: 2022}, {name: '23', id: 2023}, {name: '24', id: 2024}, {name: '25', id: 2025}, {name: '26', id: 2026}, {name: '27', id: 2027}, {name: '28', id: 2028}, {name: '29', id: 2029}, {name: '30', id: 2030}]
   end
 
-  def create_test  # テストアカウントのみ使用可能
-    Payjp.api_key = ENV["PAYJP_PRIVATE_KEY"]  # PayjpオブジェクトにAPIキー（秘密鍵）を設定
-    token = Payjp::Token.create({
-      card: {
-        number: params[:number],
-        cvc: params[:cvc],
-        exp_month: params[:exp_month],
-        exp_year: params[:exp_year]
-      }},
-      {
-        'X-Payjp-Direct-Token-Generate': 'true'  # (テスト目的のトークン作成)HTTPヘッダーに X-Payjp-Direct-Token-Generate: true を指定
-      }
-    )
-    customer = Payjp::Customer.create(card: token.id, description: 'payjp_test')
-    current_user.update(customer_token: customer.id)
-    Card.create(user_id: current_user.id, card_token: customer.default_card)
-  end
-
   def create
     Payjp.api_key = ENV["PAYJP_PRIVATE_KEY"]  # PayjpオブジェクトにAPIキー（秘密鍵）を設定
     if User.find(current_user.id).customer_token == nil
@@ -50,6 +32,24 @@ class CardsController < ApplicationController
     else
       render :new
     end
+  end
+
+  def create_test  # テストアカウントのみ使用可能
+    Payjp.api_key = ENV["PAYJP_PRIVATE_KEY"]  # PayjpオブジェクトにAPIキー（秘密鍵）を設定
+    token = Payjp::Token.create({
+      card: {
+        number: params[:number],
+        cvc: params[:cvc],
+        exp_month: params[:exp_month],
+        exp_year: params[:exp_year]
+      }},
+      {
+        'X-Payjp-Direct-Token-Generate': 'true'  # (テスト目的のトークン作成)HTTPヘッダーに X-Payjp-Direct-Token-Generate: true を指定
+      }
+    )
+    customer = Payjp::Customer.create(card: token.id, description: 'payjp_test')
+    current_user.update(customer_token: customer.id)
+    Card.create(user_id: current_user.id, card_token: customer.default_card)
   end
 
   def card_show
